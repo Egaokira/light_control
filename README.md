@@ -16,6 +16,7 @@ This project demonstrates the integration of a Django backend with TouchDesigner
 - [Code Explanation](#code-explanation)
   - [Django Code](#django-code)
   - [TouchDesigner Code](#touchdesigner-code)
+- [Video](#Video) 
 - [Conclusion](#conclusion)
 
 ## Project Description
