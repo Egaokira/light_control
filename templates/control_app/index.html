@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Control Panel</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="color"],
+        input[type="range"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="color"] {
+            height: 50px;
+        }
+        .intensity-container {
+            display: flex;
+            align-items: center;
+        }
+        #intensity {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        #intensityValue {
+            min-width: 40px;
+            text-align: right;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 20px auto;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Light Control Panel</h1>
+        <form id="lightControlForm">
+            <div class="control-group">
+                <label for="color">Color:</label>
+                <input type="color" id="color" name="color" value="#ffffff">
+            </div>
+            <div class="control-group">
+                <label for="intensity">Intensity:</label>
+                <div class="intensity-container">
+                    <input type="range" id="intensity" name="intensity" min="0" max="100" value="100">
+                    <span id="intensityValue">100%</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="pattern">Pattern:</label>
+                <select id="pattern" name="pattern">
+                    <option value="static">Static</option>
+                    <option value="pulse">Pulse</option>
+                    <option value="strobe">Strobe</option>
+                </select>
+            </div>
+            <div class="preview" id="colorPreview"></div>
+            <button type="submit">Update Light Settings</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('lightControlForm');
+        const colorInput = document.getElementById('color');
+        const intensitySlider = document.getElementById('intensity');
+        const intensityValue = document.getElementById('intensityValue');
+        const patternSelect = document.getElementById('pattern');
+        const colorPreview = document.getElementById('colorPreview');
+
+        function updateColorPreview() {
+            const color = colorInput.value;
+            const intensity = intensitySlider.value;
+            colorPreview.style.backgroundColor = color;
+            colorPreview.style.opacity = intensity / 100;
+        }
+
+        colorInput.addEventListener('input', updateColorPreview);
+        intensitySlider.addEventListener('input', function() {
+            intensityValue.textContent = this.value + '%';
+            updateColorPreview();
+        });
+
+        updateColorPreview();
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                color: colorInput.value,
+                intensity: parseInt(intensitySlider.value),
+                pattern: patternSelect.value
+            };
+
+            fetch('/api/light-settings/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Light settings updated successfully!');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while updating light settings.');
+            });
+        });
+
+        // Function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
