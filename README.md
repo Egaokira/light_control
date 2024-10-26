@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project demonstrates the integration of a Django backend with TouchDesigner to control lighting settings. The backend manages light parameters such as color, intensity, and pattern, which are then fetched and applied in real-time by TouchDesigner. This showcases my proficiency in Python, application building, software architecture, and UI frameworks, aligning with the requirements for the Python Developer position at WHITEvoid.
+This project demonstrates the integration of a Django backend with TouchDesigner to control lighting settings. The backend manages light parameters such as color, intensity, and pattern, which are then fetched and applied in real-time by TouchDesigner. This showcases my proficiency in Python, application building, software architecture, and UI frameworks,
 
 ## Table of Contents
 
